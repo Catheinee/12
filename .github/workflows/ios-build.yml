@@ -38,3 +38,41 @@ jobs:
         with:
           name: TongpinCampusIOS-simulator
           path: build/Build/Products/Debug-iphonesimulator/TongpinCampusIOS.app
+
+  device-ipa-build:
+    name: Build unsigned iOS device IPA
+    runs-on: macos-14
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Show Xcode version
+        run: xcodebuild -version
+
+      - name: Build for iOS device without signing
+        run: >-
+          xcodebuild
+          -project TongpinCampusIOS.xcodeproj
+          -scheme TongpinCampusIOS
+          -sdk iphoneos
+          -configuration Release
+          -destination 'generic/platform=iOS'
+          -derivedDataPath build-device
+          CODE_SIGNING_ALLOWED=NO
+          CODE_SIGNING_REQUIRED=NO
+          build
+
+      - name: Package unsigned IPA
+        run: |
+          mkdir -p Payload
+          cp -R build-device/Build/Products/Release-iphoneos/TongpinCampusIOS.app Payload/TongpinCampusIOS.app
+          /usr/bin/zip -qry TongpinCampusIOS-unsigned.ipa Payload
+          rm -rf Payload
+
+      - name: Upload device IPA artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: TongpinCampusIOS-device-ipa
+          path: TongpinCampusIOS-unsigned.ipa
+          retention-days: 14
+
