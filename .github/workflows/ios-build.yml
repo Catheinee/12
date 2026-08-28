@@ -1,0 +1,40 @@
+name: Tongpin Campus iOS Build
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "**/*.swift"
+      - "**/*.pbxproj"
+      - "**/*.xcscheme"
+      - ".github/workflows/ios-build.yml"
+
+jobs:
+  simulator-build:
+    name: Build iOS Simulator App
+    runs-on: macos-14
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Show Xcode version
+        run: xcodebuild -version
+
+      - name: Build without signing
+        run: >-
+          xcodebuild
+          -project TongpinCampusIOS.xcodeproj
+          -target TongpinCampusIOS
+          -sdk iphonesimulator
+          -configuration Debug
+          -destination 'generic/platform=iOS Simulator'
+          -derivedDataPath build
+          CODE_SIGNING_ALLOWED=NO
+          CODE_SIGNING_REQUIRED=NO
+          build
+
+      - name: Upload simulator artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: TongpinCampusIOS-simulator
+          path: build/Build/Products/Debug-iphonesimulator/TongpinCampusIOS.app
