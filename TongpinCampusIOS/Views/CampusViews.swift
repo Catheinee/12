@@ -636,6 +636,7 @@ private extension Calendar {
         let start = startOfDay(for: date)
         let weekday = component(.weekday, from: start)
         let distance = (weekday + 5) % 7
-        return date(byAdding: .day, value: -distance, to: start) ?? start
+        return self.date(byAdding: .day, value: -distance, to: start) ?? start
     }
 }
+
