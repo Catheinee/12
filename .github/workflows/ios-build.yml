@@ -24,7 +24,7 @@ jobs:
         run: >-
           xcodebuild
           -project TongpinCampusIOS.xcodeproj
-          -target TongpinCampusIOS
+          -scheme TongpinCampusIOS
           -sdk iphonesimulator
           -configuration Debug
           -destination 'generic/platform=iOS Simulator'
